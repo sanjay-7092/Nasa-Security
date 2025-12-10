@@ -1,5 +1,6 @@
 package com.nasa.security.utils;
 
+import com.nasa.security.models.UserToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -26,11 +27,20 @@ public class JWTUtil {
     }
 
     public static String extractUserName(String token){
-        Claims claims = Jwts.parserBuilder()
+        Claims claims = parseToken(token);
+        return claims.getSubject();
+    }
+
+    private static Claims parseToken(String token){
+        return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-        return claims.getSubject();
+    }
+
+    public static boolean validateToken(String token, UserToken userToken){
+        Claims claims = parseToken(token);
+        return claims.getExpiration().before(new Date()) && userToken.getUsername().equalsIgnoreCase(claims.getSubject());
     }
 }
