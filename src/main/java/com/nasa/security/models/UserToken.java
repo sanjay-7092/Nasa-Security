@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class UserToken {
 
+    // Add to more
     private String username;
     private String firstName;
     private String lastName;
